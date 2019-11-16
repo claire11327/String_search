@@ -78,11 +78,12 @@ Task* strDir(Task *task){
 	while((de = readdir(dr)) != NULL ){
 		char filecontext[1024];
 		filename = malloc(strlen(de->d_name)+1);
-		filepath = malloc(strlen(Dir)+strlen("/")+strlen(de->d_name)+1);
+		//filepath = malloc(strlen(Dir)+strlen("/")+strlen(de->d_name)+1);
+		filepath = malloc(strlen(task->dir)+strlen("/")+strlen(de->d_name)+1);
 		filename = de->d_name;
 		if(strcmp(de->d_name,".") != 0 && strcmp(de->d_name,"..") != 0){
 			int ii = 0;
-			if(strstr(de->d_name,".") == NULL){
+			if(strstr(de->d_name,".") == NULL && de->d_type != 8){
 				//a folder
 				Task *t = malloc(sizeof(struct Task));
 				t->target = targetStr;
@@ -97,9 +98,10 @@ Task* strDir(Task *task){
 				count += t->count;
 				strcat(task->fileN,t->fileN);
 
-			}
+			}			
 			else{
-				strcpy(filepath,Dir);
+				//strcpy(filepath,Dir);
+				strcpy(filepath,task->dir);
 				strcat(filepath,"/");
 				strcat(filepath,filename);
 				memset(filenameTemp, 0, strlen(filenameTemp)+1);
@@ -114,7 +116,6 @@ Task* strDir(Task *task){
 					char *ret;
 					while((ret = strstr(filecontext+index, targetStr)) != NULL){
 						
-						//strcpy(filenameTemp, "./");
 						strcpy(filenameTemp, filepath);
 						strcat(filenameTemp, " ");
 
@@ -129,9 +130,7 @@ Task* strDir(Task *task){
 			}
 		}
 	}
-	
 	strcat(task->fileN, resultStr);
-	printf("count = %d\n",count);
 	task->count = count;
 	return task;
 }
